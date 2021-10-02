@@ -10,6 +10,16 @@ public class Game : MonoBehaviour
     [SerializeField]
     private GameBoard board = default;
 
+    public enum GameTileContentType
+    {
+        Empty,
+        Destination,
+        Wall,
+        Water,
+        Rock,
+        Lava
+    }
+
     private void Awake()
     {
         board.Init(boardSize);
