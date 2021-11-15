@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class GameTile : MonoBehaviour
 {
-	[SerializeField]
-	Transform arrow = default;
+	[SerializeField] 
+	private Transform arrow = default;
 
 	public bool HasPath => distance != int.MaxValue;
 
-	private GameTile north, east, souch, west, nextOnPath;
+	private GameTile north, east, south, west, nextOnPath;
 	private int distance;
 
-	private static Quaternion northRotation = Quaternion.Euler(90f, 0f, 0f);
-	private static Quaternion southRotation = Quaternion.Euler(90f, 180f, 0f);
-	private static Quaternion eastRotation = Quaternion.Euler(90f, 90f, 0f);
-	private static Quaternion westRotation = Quaternion.Euler(90f, -90f, 0f);
+	private static readonly Quaternion northRotation = Quaternion.Euler(90f, 0f, 0f);
+	private static readonly Quaternion southRotation = Quaternion.Euler(90f, 180f, 0f);
+	private static readonly Quaternion eastRotation = Quaternion.Euler(90f, 90f, 0f);
+	private static readonly Quaternion westRotation = Quaternion.Euler(90f, -90f, 0f);
 
 	public static void MakeEastWestNeighbors(GameTile east, GameTile west)
 	{
@@ -26,9 +26,9 @@ public class GameTile : MonoBehaviour
 
 	public static void MakeNorthSouthNeighbors(GameTile north, GameTile south)
 	{
-		Debug.Assert(north.souch == null && south.north == null, "Redefined neighbors!");
+		Debug.Assert(north.south == null && south.north == null, "Redefined neighbors!");
 		south.north = north;
-		north.souch = south;
+		north.south = south;
 	}
 
 	public void ClearPath()
@@ -44,7 +44,7 @@ public class GameTile : MonoBehaviour
 	}
 
 	public GameTile GrowPathNorth() => GrowPathTo(north);
-	public GameTile GrowPathSouth() => GrowPathTo(souch);
+	public GameTile GrowPathSouth() => GrowPathTo(south);
 	public GameTile GrowPathEast() => GrowPathTo(east);
 	public GameTile GrowPathWest() => GrowPathTo(west);
 
@@ -79,7 +79,7 @@ public class GameTile : MonoBehaviour
         {
 			arrow.localRotation = northRotation;
         }
-        else if(nextOnPath == souch)
+        else if(nextOnPath == south)
         {
 			arrow.localRotation = southRotation;
 		}

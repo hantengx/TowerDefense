@@ -1,13 +1,27 @@
 ﻿using UnityEngine;
 using static Game;
 
-namespace Assets.Scripts
+public class GameTileContent : MonoBehaviour
 {
-    public class GameTileContent : MonoBehaviour
-    {
-        [SerializeField]
-        private GameTileContentType type = default;
+    [SerializeField]
+    private GameTileContentType type = default;
 
-        public GameTileContentType Type => type;
+    public GameTileContentType Type => type;
+    
+    private GameTileContentFactory originalFactory;
+
+    public GameTileContentFactory OriginalFactory
+    {
+        get => originalFactory;
+        set
+        {
+            Debug.Assert(originalFactory == null, "Redefined origin factory!");
+            originalFactory = value;
+        }
+    }
+
+    public void Recycle()
+    {
+        
     }
 }

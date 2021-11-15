@@ -6,9 +6,10 @@ public class Game : MonoBehaviour
 {
     [SerializeField]
     private Vector2Int boardSize = new Vector2Int(11, 11);
-
     [SerializeField]
     private GameBoard board = default;
+
+    [SerializeField] private GameTileContentFactory tileContentFactory = default;
 
     public enum GameTileContentType
     {
