@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,8 +9,8 @@ public class Game : MonoBehaviour
     private Vector2Int boardSize = new Vector2Int(11, 11);
     [SerializeField]
     private GameBoard board = default;
-
-    [SerializeField] private GameTileContentFactory tileContentFactory = default;
+    [SerializeField] 
+    private GameTileContentFactory tileContentFactory = default;
 
     public enum GameTileContentType
     {
