@@ -12,10 +12,12 @@ public class GameBoard : MonoBehaviour
     private GameTile[] tiles;
     private Vector2Int size;
     private Queue<GameTile> searchFrontier = new Queue<GameTile>();
+    private GameTileContentFactory contentFactory;
 
-    public void Init(Vector2Int size)
+    public void Init(Vector2Int size, GameTileContentFactory factory)
     {
         this.size = size;
+        this.contentFactory = factory;
         ground.localScale = new Vector3(size.x, size.y, 1f);
         tiles = new GameTile[size.x * size.y];
 
@@ -27,6 +29,7 @@ public class GameBoard : MonoBehaviour
             {
                 var tile = tiles[index] = Instantiate(tilePrefab, transform);
                 tile.transform.localPosition = new Vector3(x - offset.x, 0f, y - offset.y);
+                tile.Content = contentFactory.Get(Game.GameTileContentType.Empty);
 
                 if (x > 0)
                 {
@@ -39,18 +42,32 @@ public class GameBoard : MonoBehaviour
             }
         }
 
-        FindPaths();
+        // FindPaths();
+        ToggleDestination(tiles[tiles.Length / 2]);
     }
 
-    private void FindPaths()
+    private bool FindPaths()
     {
-        foreach (var item in tiles)
+        foreach (var tile in tiles)
         {
-            item.ClearPath();
+            if (tile.Content.Type == Game.GameTileContentType.Destination)
+            {
+                tile.BecameDestination();
+                searchFrontier.Enqueue(tile);
+            }
+            else
+            {
+                tile.ClearPath();
+            }
         }
 
-        tiles[tiles.Length / 2].BecameDistination();
-        searchFrontier.Enqueue(tiles[tiles.Length / 2]);
+        if (searchFrontier.Count == 0)
+        {
+            return false;
+        }
+
+        // tiles[tiles.Length / 2].BecameDestination();
+        // searchFrontier.Enqueue(tiles[tiles.Length / 2]);
 
         while(searchFrontier.Count > 0)
         {
@@ -69,6 +86,40 @@ public class GameBoard : MonoBehaviour
         foreach (var tile in tiles)
         {
             tile.ShowPath();
+        }
+
+        return true;
+    }
+
+    public GameTile GetTile(Ray ray)
+    {
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            var x = (int) (hit.point.x + size.x * 0.5f);
+            var y = (int) (hit.point.z + size.y * 0.5f);
+            if (x >= 0 && x < size.x && y >= 0 && y < size.y)
+            {
+                return tiles[x + y * size.x];
+            }
+        }
+        return null;
+    }
+
+    public void ToggleDestination(GameTile tile)
+    {
+        if (tile.Content.Type == Game.GameTileContentType.Destination)
+        {
+            tile.Content = contentFactory.Get(Game.GameTileContentType.Empty);
+            if (!FindPaths())
+            {
+                tile.Content = contentFactory.Get(Game.GameTileContentType.Destination);
+                FindPaths();
+            }
+        }
+        else
+        {
+            tile.Content = contentFactory.Get(Game.GameTileContentType.Destination);
+            FindPaths();
         }
     }
 }

@@ -22,6 +22,6 @@ public class GameTileContent : MonoBehaviour
 
     public void Recycle()
     {
-        
+        originalFactory.Reclaim(this);
     }
 }

@@ -7,16 +7,32 @@ public class GameTile : MonoBehaviour
 	[SerializeField] 
 	private Transform arrow = default;
 
-	public bool HasPath => distance != int.MaxValue;
-
-	private GameTile north, east, south, west, nextOnPath;
-	private int distance;
-
 	private static readonly Quaternion northRotation = Quaternion.Euler(90f, 0f, 0f);
 	private static readonly Quaternion southRotation = Quaternion.Euler(90f, 180f, 0f);
 	private static readonly Quaternion eastRotation = Quaternion.Euler(90f, 90f, 0f);
 	private static readonly Quaternion westRotation = Quaternion.Euler(90f, -90f, 0f);
+	private GameTile north, east, south, west, nextOnPath;
+	private int distance;
+	private GameTileContent content;
+	
+	public bool HasPath => distance != int.MaxValue;
 
+	public GameTileContent Content
+	{
+		get => content;
+		set
+		{
+			Debug.Assert(value != null, "Null assigned to content!");
+			if (content != null)
+			{
+				content.Recycle();
+			}
+
+			content = value;
+			content.transform.localPosition = transform.localPosition;
+		}
+	}
+	
 	public static void MakeEastWestNeighbors(GameTile east, GameTile west)
 	{
 		Debug.Assert(west.east == null && east.west == null, "Redefined neighbors!");
@@ -37,7 +53,7 @@ public class GameTile : MonoBehaviour
 		nextOnPath = null;
 	}
 
-	public void BecameDistination()
+	public void BecameDestination()
 	{
 		distance = 0;
 		nextOnPath = null;
@@ -91,6 +107,5 @@ public class GameTile : MonoBehaviour
         {
 			arrow.localRotation = westRotation;
 		}
-
 	}
 }
