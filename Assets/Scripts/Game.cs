@@ -27,6 +27,7 @@ public class Game : MonoBehaviour
     private void Awake()
     {
         board.Init(boardSize, tileContentFactory);
+        board.ShowGrid = true;
     }
 
     private void OnValidate()
@@ -57,6 +58,11 @@ public class Game : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.V))
         {
             board.ShowPaths = !board.ShowPaths;
+        }
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            board.ShowGrid = !board.ShowGrid;
         }
     }
 
