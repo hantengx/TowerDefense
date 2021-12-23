@@ -46,8 +46,17 @@ public class Game : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("click position: " + Input.mousePosition);
+            // Debug.Log("click position: " + Input.mousePosition);
             HandleTouch();
+        } 
+        else if (Input.GetMouseButtonDown(1)) 
+        {
+            HandleAlternativeTouch();
+        }
+
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            board.ShowPaths = !board.ShowPaths;
         }
     }
 
@@ -59,7 +68,17 @@ public class Game : MonoBehaviour
             return;
         }
 
-        // tile.Content = tileContentFactory.Get(GameTileContentType.Destination);
+        board.ToggleWall(tile);
+    }
+
+    private void HandleAlternativeTouch()
+    {
+        var tile = board.GetTile(TouchRay);
+        if (tile == null)
+        {
+            return;
+        }
+        
         board.ToggleDestination(tile);
     }
 }

@@ -7,10 +7,10 @@ public class GameTile : MonoBehaviour
 	[SerializeField] 
 	private Transform arrow = default;
 
-	private static readonly Quaternion northRotation = Quaternion.Euler(90f, 0f, 0f);
-	private static readonly Quaternion southRotation = Quaternion.Euler(90f, 180f, 0f);
-	private static readonly Quaternion eastRotation = Quaternion.Euler(90f, 90f, 0f);
-	private static readonly Quaternion westRotation = Quaternion.Euler(90f, -90f, 0f);
+	private static readonly Quaternion NorthRotation = Quaternion.Euler(90f, 0f, 0f);
+	private static readonly Quaternion SouthRotation = Quaternion.Euler(90f, 180f, 0f);
+	private static readonly Quaternion EastRotation = Quaternion.Euler(90f, 90f, 0f);
+	private static readonly Quaternion WestRotation = Quaternion.Euler(90f, -90f, 0f);
 	private GameTile north, east, south, west, nextOnPath;
 	private int distance;
 	private GameTileContent content;
@@ -79,7 +79,7 @@ public class GameTile : MonoBehaviour
 		neighbor.distance = distance + 1;
 		neighbor.nextOnPath = this;
 
-		return neighbor;
+		return neighbor.Content.Type == Game.GameTileContentType.Wall ? null : neighbor;
     }
 
 	public void ShowPath()
@@ -93,19 +93,24 @@ public class GameTile : MonoBehaviour
 		arrow.gameObject.SetActive(true);
         if (nextOnPath == north)
         {
-			arrow.localRotation = northRotation;
+			arrow.localRotation = NorthRotation;
         }
         else if(nextOnPath == south)
         {
-			arrow.localRotation = southRotation;
+			arrow.localRotation = SouthRotation;
 		}
         else if (nextOnPath == east)
         {
-			arrow.localRotation = eastRotation;
+			arrow.localRotation = EastRotation;
         }
 		else
         {
-			arrow.localRotation = westRotation;
+			arrow.localRotation = WestRotation;
 		}
+	}
+
+	public void HidePath()
+	{
+		arrow.gameObject.SetActive(false);
 	}
 }

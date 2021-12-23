@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameBoard : MonoBehaviour
@@ -13,6 +14,30 @@ public class GameBoard : MonoBehaviour
     private Vector2Int size;
     private Queue<GameTile> searchFrontier = new Queue<GameTile>();
     private GameTileContentFactory contentFactory;
+    private bool showPaths;
+
+    public bool ShowPaths
+    {
+        get => showPaths;
+        set
+        {
+            showPaths = value;
+            if (showPaths)
+            {
+                foreach (var tile in tiles)
+                {
+                    tile.ShowPath();
+                }
+            }
+            else
+            {
+                foreach (var tile in tiles)
+                {
+                    tile.HidePath();
+                }
+            }
+        }
+    }
 
     public void Init(Vector2Int size, GameTileContentFactory factory)
     {
@@ -83,9 +108,17 @@ public class GameBoard : MonoBehaviour
             searchFrontier.Enqueue(tile.GrowPathWest());
         }
 
-        foreach (var tile in tiles)
+        if (tiles.Any(tile => !tile.HasPath))
         {
-            tile.ShowPath();
+            return false;
+        }
+
+        if (showPaths)
+        {
+            foreach (var tile in tiles)
+            {
+                tile.ShowPath();
+            }
         }
 
         return true;
@@ -116,10 +149,28 @@ public class GameBoard : MonoBehaviour
                 FindPaths();
             }
         }
-        else
+        else if (tile.Content.Type == Game.GameTileContentType.Empty)
         {
             tile.Content = contentFactory.Get(Game.GameTileContentType.Destination);
             FindPaths();
+        }
+    }
+
+    public void ToggleWall(GameTile tile)
+    {
+        if (tile.Content.Type == Game.GameTileContentType.Wall)
+        {
+            tile.Content = contentFactory.Get(Game.GameTileContentType.Empty);
+            FindPaths();
+        }
+        else if(tile.Content.Type == Game.GameTileContentType.Empty)
+        {
+            tile.Content = contentFactory.Get(Game.GameTileContentType.Wall);
+            if (!FindPaths())
+            {
+                tile.Content = contentFactory.Get(Game.GameTileContentType.Empty);
+                FindPaths();
+            }
         }
     }
 }
