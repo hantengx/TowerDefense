@@ -10,12 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b6d75f0402e0f54429654d50a961e8d7, type: 3}
-  m_Name: Game Tile Content Factory
+  m_Name: GameTileContentFactory
   m_EditorClassIdentifier: 
-  destinationPrefab: {fileID: 5436370207655927053, guid: b88e17fce5c33e44f84f2c6e176c7601, type: 3}
-  emptyPrefab: {fileID: 184306480654897601, guid: f7b2bc30ce9fa954684f9174bf2655f3, type: 3}
-  wallPrefab: {fileID: 3295253193878544323, guid: 1a6d539667eeaa842a6a5bbc0ce4768d, type: 3}
   contentPrefabs:
   - {fileID: 5436370207655927053, guid: b88e17fce5c33e44f84f2c6e176c7601, type: 3}
   - {fileID: 184306480654897601, guid: f7b2bc30ce9fa954684f9174bf2655f3, type: 3}
   - {fileID: 3295253193878544323, guid: 1a6d539667eeaa842a6a5bbc0ce4768d, type: 3}
+  - {fileID: 5436370207655927053, guid: bb9eb93ac9f68ef48a65dd721184faeb, type: 3}

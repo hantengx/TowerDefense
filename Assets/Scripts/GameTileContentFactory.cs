@@ -7,12 +7,11 @@ using UnityEngine.SceneManagement;
 using static Game;
 
 [CreateAssetMenu]
-public class GameTileContentFactory : ScriptableObject
+public class GameTileContentFactory : GameObjectFactory
 {
     [SerializeField]
     private GameTileContent[] contentPrefabs = default;
     
-    private Scene contentScene;
     // public GameTileContent[] tileContentPrefabs;
 
     public void Reclaim(GameTileContent content)
@@ -23,30 +22,9 @@ public class GameTileContentFactory : ScriptableObject
 
     private GameTileContent Get(GameTileContent prefab)
     {
-        var content = Instantiate(prefab);
+        var content = CreateGameObjectInstance(prefab);
         content.OriginalFactory = this;
-        MoveToFactoryScene(content.gameObject);
         return content;
-    }
-
-    private void MoveToFactoryScene(GameObject o)
-    {
-        if (!contentScene.isLoaded)
-        {
-            if (Application.isEditor)
-            {
-                contentScene = SceneManager.GetSceneByName(name);
-                if (!contentScene.isLoaded)
-                {
-                    contentScene = SceneManager.CreateScene(name);
-                }   
-            }
-            else
-            {
-                contentScene = SceneManager.CreateScene(name);
-            }
-        }
-        SceneManager.MoveGameObjectToScene(o, contentScene);
     }
 
     public GameTileContent Get(GameTileContentType type)

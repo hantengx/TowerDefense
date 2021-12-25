@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = System.Random;
 
 public class Game : MonoBehaviour
 {
@@ -11,7 +12,14 @@ public class Game : MonoBehaviour
     private GameBoard board = default;
     [SerializeField] 
     private GameTileContentFactory tileContentFactory = default;
+    
+    [SerializeField] 
+    private EnemyFactory enemyFactory = default;
+    
+    [SerializeField, Range(0.1f, 10f)]
+    private float spawnSpeed = 1f;
 
+    private float spawnProgress;
     private Ray TouchRay => Camera.main.ScreenPointToRay(Input.mousePosition);
     
     public enum GameTileContentType
@@ -19,9 +27,7 @@ public class Game : MonoBehaviour
         Empty,
         Destination,
         Wall,
-        Water,
-        Rock,
-        Lava
+        SpawnPoint,
     }
 
     private void Awake()
@@ -64,6 +70,13 @@ public class Game : MonoBehaviour
         {
             board.ShowGrid = !board.ShowGrid;
         }
+
+        spawnProgress += spawnSpeed * Time.deltaTime;
+        while (spawnProgress >= 1f)
+        {
+            spawnProgress -= 1f;
+            SpawnEnemy();
+        }
     }
 
     private void HandleTouch()
@@ -84,7 +97,22 @@ public class Game : MonoBehaviour
         {
             return;
         }
-        
-        board.ToggleDestination(tile);
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            board.ToggleDestination(tile);
+        }
+        else
+        {
+            board.ToggleSpawnPoint(tile);
+        }
+    }
+
+    private void SpawnEnemy()
+    {
+        var index = UnityEngine.Random.Range(0, board.SpawnPointCount);
+        var spawnPoint = board.GetSpawnPoint(index);
+        var enemy = enemyFactory.Get();
+        enemy.SpawnOn(spawnPoint);
     }
 }
