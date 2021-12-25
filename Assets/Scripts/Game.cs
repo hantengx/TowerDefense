@@ -20,6 +20,7 @@ public class Game : MonoBehaviour
     private float spawnSpeed = 1f;
 
     private float spawnProgress;
+    private EnemyCollection enemyCollection = new EnemyCollection();
     private Ray TouchRay => Camera.main.ScreenPointToRay(Input.mousePosition);
     
     public enum GameTileContentType
@@ -77,6 +78,7 @@ public class Game : MonoBehaviour
             spawnProgress -= 1f;
             SpawnEnemy();
         }
+        enemyCollection.GameUpdate();
     }
 
     private void HandleTouch()
@@ -114,5 +116,6 @@ public class Game : MonoBehaviour
         var spawnPoint = board.GetSpawnPoint(index);
         var enemy = enemyFactory.Get();
         enemy.SpawnOn(spawnPoint);
+        enemyCollection.Add(enemy);
     }
 }
