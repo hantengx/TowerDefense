@@ -1,6 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
+public enum Direction { North, East, South, West };
+public enum DirectionChange { None, TurnRight, TurnAround, TurnLeft};
+
+public static class DirectionExtension
+{
+	private static Quaternion[] rotations = {
+		Quaternion.identity,
+		Quaternion.Euler(0f, 90f, 0f),
+		Quaternion.Euler(0f, 180f, 0f),
+		Quaternion.Euler(0f, 270f, 0f),
+	};
+
+	public static Quaternion GetRotation(this Direction direction)
+    {
+		return rotations[(int)direction];
+    }
+
+	public static DirectionChange GetDirectionChangeTo(this Direction from, Direction to)
+    {
+		var delta = to - from;
+		delta = delta < 0 ? delta + 4 : delta;
+		return (DirectionChange)delta;
+    }
+
+	public static float GetAngle(this Direction direction)
+    {
+		return (int)direction * 90f;
+    }
+}
 
 public class GameTile : MonoBehaviour
 {
@@ -8,16 +36,15 @@ public class GameTile : MonoBehaviour
 	private Transform arrow = default;
 
 	private static readonly Quaternion NorthRotation = Quaternion.Euler(90f, 0f, 0f);
-	private static readonly Quaternion SouthRotation = Quaternion.Euler(90f, 180f, 0f);
 	private static readonly Quaternion EastRotation = Quaternion.Euler(90f, 90f, 0f);
-	private static readonly Quaternion WestRotation = Quaternion.Euler(90f, -90f, 0f);
+	private static readonly Quaternion SouthRotation = Quaternion.Euler(90f, 180f, 0f);
+	private static readonly Quaternion WestRotation = Quaternion.Euler(90f, 270f, 0f);
 	private GameTile north, east, south, west, nextOnPath;
 	private int distance;
 	private GameTileContent content;
 	
 	public bool HasPath => distance != int.MaxValue;
-	public GameTile NextTileOnPath => nextOnPath;
-
+	public bool IsAlternative { get; set; }
 	public GameTileContent Content
 	{
 		get => content;
@@ -33,6 +60,9 @@ public class GameTile : MonoBehaviour
 			content.transform.localPosition = transform.localPosition;
 		}
 	}
+	public GameTile NextTileOnPath => nextOnPath;
+	public Vector3 ExitPoint { get; private set; }
+	public Direction PathDirection { get; private set; }
 	
 	public static void MakeEastWestNeighbors(GameTile east, GameTile west)
 	{
@@ -58,19 +88,20 @@ public class GameTile : MonoBehaviour
 	{
 		distance = 0;
 		nextOnPath = null;
+		ExitPoint = transform.localPosition;
 	}
 
-	public GameTile GrowPathNorth() => GrowPathTo(north);
-	public GameTile GrowPathSouth() => GrowPathTo(south);
-	public GameTile GrowPathEast() => GrowPathTo(east);
-	public GameTile GrowPathWest() => GrowPathTo(west);
+	public GameTile GrowPathNorth() => GrowPathTo(north, Direction.North);
+	public GameTile GrowPathSouth() => GrowPathTo(south, Direction.South);
+	public GameTile GrowPathEast() => GrowPathTo(east, Direction.East);
+	public GameTile GrowPathWest() => GrowPathTo(west, Direction.West);
 
 	/// <summary>
 	/// create path, The direction is opposite to the path 
 	/// </summary>
 	/// <param name="neighbor"></param>
 	/// <returns></returns>
-	private GameTile GrowPathTo(GameTile neighbor)
+	private GameTile GrowPathTo(GameTile neighbor, Direction direction)
 	{
 		if (!HasPath || neighbor == null || neighbor.HasPath)
         {
@@ -79,6 +110,8 @@ public class GameTile : MonoBehaviour
 
 		neighbor.distance = distance + 1;
 		neighbor.nextOnPath = this;
+		neighbor.ExitPoint = Vector3.Lerp(neighbor.transform.localPosition, transform.localPosition, 0.5f);
+		neighbor.PathDirection = direction;
 
 		return neighbor.Content.Type == Game.GameTileContentType.Wall ? null : neighbor;
     }

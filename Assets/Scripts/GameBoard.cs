@@ -79,6 +79,11 @@ public class GameBoard : MonoBehaviour
                 var tile = tiles[index] = Instantiate(tilePrefab, transform);
                 tile.transform.localPosition = new Vector3(x - offset.x, 0f, y - offset.y);
                 tile.Content = contentFactory.Get(Game.GameTileContentType.Empty);
+                tile.IsAlternative = (x & 1) == 0;
+                if ((y & 1) == 0)
+                {
+                    tile.IsAlternative = !tile.IsAlternative;
+                }
 
                 if (x > 0)
                 {
@@ -127,10 +132,20 @@ public class GameBoard : MonoBehaviour
                 continue;
             }
 
-            searchFrontier.Enqueue(tile.GrowPathNorth());
-            searchFrontier.Enqueue(tile.GrowPathEast());
-            searchFrontier.Enqueue(tile.GrowPathSouth());
-            searchFrontier.Enqueue(tile.GrowPathWest());
+            if (tile.IsAlternative)
+            {
+                searchFrontier.Enqueue(tile.GrowPathNorth());
+                searchFrontier.Enqueue(tile.GrowPathSouth());
+                searchFrontier.Enqueue(tile.GrowPathEast());
+                searchFrontier.Enqueue(tile.GrowPathWest());
+            }
+            else
+            {
+                searchFrontier.Enqueue(tile.GrowPathWest());
+                searchFrontier.Enqueue(tile.GrowPathEast());
+                searchFrontier.Enqueue(tile.GrowPathSouth());
+                searchFrontier.Enqueue(tile.GrowPathNorth());
+            }
         }
 
         if (tiles.Any(tile => !tile.HasPath))
