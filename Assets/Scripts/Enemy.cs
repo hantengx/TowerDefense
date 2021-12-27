@@ -63,8 +63,7 @@ public class Enemy : MonoBehaviour
         direction = tileFrom.PathDirection;
         angleFrom = angleTo;
         //why? different
-        //angleTo = direction.GetAngle();
-        //Debug.Log("angleTo: " + angleTo);
+        // angleTo = direction.GetAngle();
         switch (directionChange)
         {
             case DirectionChange.None: PrepareForward(); break;
@@ -72,7 +71,7 @@ public class Enemy : MonoBehaviour
             case DirectionChange.TurnLeft: PrepareTurnLeft(); break;
             default: PrepareTurnAround(); break;
         }
-        //Debug.Log("angleTo: " + angleTo);
+        Debug.Log($"direction: {direction}, angleFrom: {angleFrom}, angleTo: {angleTo}");
     }
 
     private void PrepareForward()

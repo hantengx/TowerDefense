@@ -5,7 +5,8 @@ public enum DirectionChange { None, TurnRight, TurnAround, TurnLeft};
 
 public static class DirectionExtension
 {
-	private static Quaternion[] rotations = {
+	private static Quaternion[] rotations =
+	{
 		Quaternion.identity,
 		Quaternion.Euler(0f, 90f, 0f),
 		Quaternion.Euler(0f, 180f, 0f),
@@ -91,10 +92,10 @@ public class GameTile : MonoBehaviour
 		ExitPoint = transform.localPosition;
 	}
 
-	public GameTile GrowPathNorth() => GrowPathTo(north, Direction.North);
-	public GameTile GrowPathSouth() => GrowPathTo(south, Direction.South);
-	public GameTile GrowPathEast() => GrowPathTo(east, Direction.East);
-	public GameTile GrowPathWest() => GrowPathTo(west, Direction.West);
+	public GameTile GrowPathNorth() => GrowPathTo(north, Direction.South);
+	public GameTile GrowPathSouth() => GrowPathTo(south, Direction.North);
+	public GameTile GrowPathEast() => GrowPathTo(east, Direction.West);
+	public GameTile GrowPathWest() => GrowPathTo(west, Direction.East);
 
 	/// <summary>
 	/// create path, The direction is opposite to the path 
