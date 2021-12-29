@@ -2,6 +2,9 @@
 
 public class Enemy : MonoBehaviour
 {
+    [SerializeField] 
+    private Transform model = default;
+    
     private GameTile tileFrom, tileTo;
     private Vector3 posFrom, posTo;
     private float progress;
@@ -46,11 +49,14 @@ public class Enemy : MonoBehaviour
             PrepareNextState();
         }
 
-        transform.localPosition = Vector3.Lerp(posFrom, posTo, progress);
         if (directionChange != DirectionChange.None)
         {
             float angle = Mathf.Lerp(angleFrom, angleTo, progress);
             transform.localRotation = Quaternion.Euler(0, angle, 0);
+        }
+        else
+        {
+            transform.localPosition = Vector3.Lerp(posFrom, posTo, progress);
         }
         return true;
     }
@@ -71,29 +77,36 @@ public class Enemy : MonoBehaviour
             case DirectionChange.TurnLeft: PrepareTurnLeft(); break;
             default: PrepareTurnAround(); break;
         }
-        Debug.Log($"direction: {direction}, angleFrom: {angleFrom}, angleTo: {angleTo}");
+        // Debug.Log($"direction: {direction}, angleFrom: {angleFrom}, angleTo: {angleTo}");
     }
 
     private void PrepareForward()
     {
         transform.localRotation = direction.GetRotation();
         angleTo = direction.GetAngle();
+        model.localPosition = Vector3.zero;
     }
 
-    void PrepareTurnRight()
+    private void PrepareTurnRight()
     {
         angleTo = angleFrom + 90f;
+        model.localPosition = new Vector3(-0.5f, 0f);
+        transform.localPosition = posFrom + direction.GetHalfVector();
         //avoid wrapping angles
         //angleTo = direction.GetAngle();
     }
 
-    void PrepareTurnLeft()
+    private void PrepareTurnLeft()
     {
         angleTo = angleFrom - 90f;
+        model.localPosition = new Vector3(0.5f, 0f);
+        transform.localPosition = posFrom + direction.GetHalfVector();
     }
 
-    void PrepareTurnAround()
+    private void PrepareTurnAround()
     {
         angleTo = angleFrom + 180f;
+        model.localPosition = Vector3.zero;
+        transform.localPosition = posFrom;
     }
 }

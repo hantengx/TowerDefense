@@ -13,6 +13,14 @@ public static class DirectionExtension
 		Quaternion.Euler(0f, 270f, 0f),
 	};
 
+	private static Vector3[] halfVectors =
+	{
+		Vector3.forward * 0.5f,
+		Vector3.right * 0.5f,
+		Vector3.back * 0.5f,
+		Vector3.left * 0.5f,
+	};
+
 	public static Quaternion GetRotation(this Direction direction)
     {
 		return rotations[(int)direction];
@@ -29,6 +37,11 @@ public static class DirectionExtension
     {
 		return (int)direction * 90f;
     }
+
+	public static Vector3 GetHalfVector(this Direction direction)
+	{
+		return halfVectors[(int)direction];
+	}
 }
 
 public class GameTile : MonoBehaviour
@@ -111,7 +124,8 @@ public class GameTile : MonoBehaviour
 
 		neighbor.distance = distance + 1;
 		neighbor.nextOnPath = this;
-		neighbor.ExitPoint = Vector3.Lerp(neighbor.transform.localPosition, transform.localPosition, 0.5f);
+		// neighbor.ExitPoint = Vector3.Lerp(neighbor.transform.localPosition, transform.localPosition, 0.5f);
+		neighbor.ExitPoint = neighbor.transform.localPosition + direction.GetHalfVector();
 		neighbor.PathDirection = direction;
 
 		return neighbor.Content.Type == Game.GameTileContentType.Wall ? null : neighbor;
