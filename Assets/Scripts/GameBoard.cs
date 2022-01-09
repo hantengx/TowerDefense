@@ -239,4 +239,22 @@ public class GameBoard : MonoBehaviour
         }
         return spawnPoints[index];
     }
+    
+    public void ToggleTower(GameTile tile)
+    {
+        if (tile.Content.Type == Game.GameTileContentType.Tower)
+        {
+            tile.Content = contentFactory.Get(Game.GameTileContentType.Empty);
+            FindPaths();
+        }
+        else if(tile.Content.Type == Game.GameTileContentType.Empty)
+        {
+            tile.Content = contentFactory.Get(Game.GameTileContentType.Tower);
+            if (!FindPaths())
+            {
+                tile.Content = contentFactory.Get(Game.GameTileContentType.Empty);
+                FindPaths();
+            }
+        }
+    }
 }

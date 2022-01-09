@@ -128,7 +128,8 @@ public class GameTile : MonoBehaviour
 		neighbor.ExitPoint = neighbor.transform.localPosition + direction.GetHalfVector();
 		neighbor.PathDirection = direction;
 
-		return neighbor.Content.Type == Game.GameTileContentType.Wall ? null : neighbor;
+		// return neighbor.Content.Type == Game.GameTileContentType.Wall ? null : neighbor;
+		return neighbor.Content.BlockPath ? null : neighbor;
     }
 
 	public void ShowPath()

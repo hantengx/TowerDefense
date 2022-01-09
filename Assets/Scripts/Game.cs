@@ -29,6 +29,7 @@ public class Game : MonoBehaviour
         Destination,
         Wall,
         SpawnPoint,
+        Tower,
     }
 
     private void Awake()
@@ -89,7 +90,14 @@ public class Game : MonoBehaviour
             return;
         }
 
-        board.ToggleWall(tile);
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            board.ToggleTower(tile);
+        }
+        else
+        {
+            board.ToggleWall(tile);
+        }
     }
 
     private void HandleAlternativeTouch()
