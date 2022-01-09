@@ -15,10 +15,11 @@ public class Enemy : MonoBehaviour
     private float speed;
     
     public EnemyFactory OriginFactory { get; set; }
-
+    public float Scale { get; private set; }
 
     public void Initialize(float scale, float speed, float pathOffset)
     {
+        Scale = scale;
         model.localScale = Vector3.one * scale;
         this.speed = speed;
         this.pathOffset = pathOffset;

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using static Game;
 
+[SelectionBase]
 public class GameTileContent : MonoBehaviour
 {
     [SerializeField]
@@ -25,5 +26,10 @@ public class GameTileContent : MonoBehaviour
     public void Recycle()
     {
         originalFactory.Reclaim(this);
+    }
+
+    public virtual void GameUpdate()
+    {
+        
     }
 }

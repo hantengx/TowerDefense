@@ -80,6 +80,8 @@ public class Game : MonoBehaviour
             SpawnEnemy();
         }
         enemyCollection.GameUpdate();
+        Physics.SyncTransforms();
+        board.GameUpdate();
     }
 
     private void HandleTouch()
