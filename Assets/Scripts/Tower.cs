@@ -1,19 +1,34 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class Tower : GameTileContent
 {
-    [SerializeField, Range(1.5f, 10.5f)]
+    [SerializeField, Range(1.5f, 10.5f)] 
     private float targetingRange = 1.5f;
+
+    [SerializeField] 
+    private Transform turret = default, laserBeam = default;
 
     private TargetPoint target;
     private const int enemyLayerMask = 1 << 9;
     private Collider[] targetsBuffer = new Collider[1];
-    
+    private Vector3 laserBeamScale;
+
+    private void Awake()
+    {
+        laserBeamScale = laserBeam.localScale;
+    }
+
     public override void GameUpdate()
     {
         if (TrackTarget() || AcquireTarget())
         {
-            Debug.Log("Locked target!");
+            // Debug.Log("Locked target!");
+            Shoot();
+        }
+        else
+        {
+            laserBeam.localScale = Vector3.zero;
         }
     }
 
@@ -66,5 +81,17 @@ public class Tower : GameTileContent
         {
             Gizmos.DrawLine(position, target.Position);
         }
+    }
+
+    private void Shoot()
+    {
+        var point = target.Position;
+        turret.LookAt(point);
+        laserBeam.localRotation = turret.localRotation;
+
+        float d = Vector3.Distance(turret.position, point);
+        laserBeamScale.z = d;
+        laserBeam.localScale = laserBeamScale;
+        laserBeam.localPosition = turret.localPosition + 0.5f * d * laserBeam.forward;
     }
 }
