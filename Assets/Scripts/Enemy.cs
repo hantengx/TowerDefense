@@ -132,7 +132,7 @@ public class Enemy : MonoBehaviour
         posTo = tileFrom.ExitPoint;
         direction = tileFrom.PathDirection;
         directionChange = DirectionChange.None;
-        angleFrom = direction.GetAngle();
+        angleFrom = angleTo = direction.GetAngle();
         model.localPosition = new Vector3(pathOffset, 0f);
         transform.localRotation = direction.GetRotation();
         progressFactor = 2f * speed;
