@@ -1,17 +1,22 @@
 ﻿using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Tower : GameTileContent
 {
     [SerializeField, Range(1.5f, 10.5f)] 
     private float targetingRange = 1.5f;
+    
+    [SerializeField, Range(1f, 100f)] 
+    private float damagePerSecond = 10f;
 
     [SerializeField] 
     private Transform turret = default, laserBeam = default;
 
+
     private TargetPoint target;
     private const int enemyLayerMask = 1 << 9;
-    private Collider[] targetsBuffer = new Collider[1];
+    private Collider[] targetsBuffer = new Collider[100];
     private Vector3 laserBeamScale;
 
     private void Awake()
@@ -40,7 +45,7 @@ public class Tower : GameTileContent
         int hits = Physics.OverlapCapsuleNonAlloc (a, b, targetingRange, this.targetsBuffer, enemyLayerMask);
         if (hits > 0)
         {
-            target = targetsBuffer[0].GetComponent<TargetPoint>();
+            target = targetsBuffer[Random.Range(0, hits)].GetComponent<TargetPoint>();
             Debug.Assert(target != null, "Targeted non-enemy!", targetsBuffer[0]);
             return true;
         }
@@ -93,5 +98,6 @@ public class Tower : GameTileContent
         laserBeamScale.z = d;
         laserBeam.localScale = laserBeamScale;
         laserBeam.localPosition = turret.localPosition + 0.5f * d * laserBeam.forward;
+        target.Enemy.ApplyDamage(damagePerSecond * Time.deltaTime);
     }
 }

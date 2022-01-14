@@ -17,12 +17,15 @@ public class Enemy : MonoBehaviour
     public EnemyFactory OriginFactory { get; set; }
     public float Scale { get; private set; }
 
+    private float Health { get; set; }
+
     public void Initialize(float scale, float speed, float pathOffset)
     {
         Scale = scale;
         model.localScale = Vector3.one * scale;
         this.speed = speed;
         this.pathOffset = pathOffset;
+        Health = 100f * scale;
     }
     
     public void SpawnOn(GameTile tile)
@@ -36,6 +39,11 @@ public class Enemy : MonoBehaviour
 
     public bool GameUpdate()
     {
+        if (Health <= 0f)
+        {
+            OriginFactory.Reclaim(this);
+            return false;
+        }
         progress += Time.deltaTime * progressFactor;
         while (progress >= 1f)
         {
@@ -147,5 +155,11 @@ public class Enemy : MonoBehaviour
         model.localPosition = new Vector3(pathOffset, 0f);
         transform.localRotation = direction.GetRotation();
         progressFactor = 2f * speed;
+    }
+
+    public void ApplyDamage(float damage)
+    {
+        Debug.Assert(damage >= 0, "Negative damage applied");
+        Health -= damage;
     }
 }

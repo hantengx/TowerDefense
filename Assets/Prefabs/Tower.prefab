@@ -308,6 +308,7 @@ MonoBehaviour:
   targetingRange: 2.5
   turret: {fileID: 7041310446671053363}
   laserBeam: {fileID: 7041310445951618032}
+  damagePerSecond: 20
 --- !u!1 &7106669071760945841
 GameObject:
   m_ObjectHideFlags: 0
