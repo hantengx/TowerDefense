@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using Random = System.Random;
 
@@ -72,6 +73,13 @@ public class Game : MonoBehaviour
         {
             board.ShowGrid = !board.ShowGrid;
         }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            //MyScreenshot.CaptureScreenshot();
+            StartCoroutine(MyScreenshot.SaveScreenJPG());
+        }
+
 
         spawnProgress += spawnSpeed * Time.deltaTime;
         while (spawnProgress >= 1f)
